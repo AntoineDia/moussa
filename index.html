@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Movies</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="./libs/jsmediatags.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.0"></script>
+</head>
+<body>
+
+  <div id="music_player_app">
+
+    <input
+      type="file" multiple
+      @change="loadFiles($event.target.files)"
+    >
+
+    <audio controls :src="currentSong"></audio>
+
+    <ul>
+      <li v-for="file in files">
+        {{file.name}}
+      </li>
+    </ul>
+
+  </div>
+
+</body>
+
+<script src="./app.js"></script>
+
+</html>
