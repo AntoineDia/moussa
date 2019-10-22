@@ -13,16 +13,22 @@
 
   <div id="music_player_app">
 
-    <input
-      type="file" multiple
-      @change="loadFiles($event.target.files)"
-    >
+    <label for="upload">
+        <img :src="icons.folder" class="icon"/>
+        <input type="file" id="upload" multiple style="display:none" @change="loadFiles($event.target.files)">
+    </label>
 
-    <audio controls :src="currentSong"></audio>
+    <div id="player">
+      <div id="currentSong">
+        <img :src="currentSong.albumArtUrl || './icons/music.png'" id="coverArt">
+      </div>
+      <input type="range" min="0" :max="audio ? audio.duration:0" :value="currentTime" @mousemove="moveUpdate" @click="clickUpdate">
+      <audio :src="currentSong.url" id="audioPlayer" @timeupdate="updateCurrentTime"></audio>
+    </div>
 
     <ul>
-      <li v-for="file in files">
-        {{file.name}}
+      <li v-for="(track,i ) in playlist" @click="currentSong = track" :class="{current: track === currentSong}">
+        {{i+1}}: {{track.title || track.name}}
       </li>
     </ul>
 
