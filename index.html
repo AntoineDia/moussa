@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Movies</title>
+  <title>Moussa</title>
   <link rel="stylesheet" href="style.css">
   <script src="./libs/jsmediatags.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue@2.6.0"></script>
@@ -14,21 +14,46 @@
   <div id="music_player_app">
 
     <label for="upload">
-        <img :src="icons.folder" class="icon"/>
-        <input type="file" id="upload" multiple style="display:none" @change="loadFiles($event.target.files)">
+      <img :src="icons.folder" class="icon"/>
+      <input type="file" id="upload" multiple
+        style="display:none"
+        @change="loadFiles($event.target.files)">
     </label>
 
     <div id="player">
-      <div id="currentSong">
-        <img :src="currentSong.albumArtUrl || './icons/music.png'" id="coverArt">
+      <div id="currentSongPlaying">
+        <img
+          :src="currentSong.albumArtUrl || icons.music"
+          id="coverArt">
       </div>
-      <input type="range" min="0" :max="audio ? audio.duration:0" :value="currentTime" @mousemove="moveUpdate" @click="clickUpdate">
-      <audio :src="currentSong.url" id="audioPlayer" @timeupdate="updateCurrentTime"></audio>
+      <div id="title">{{currentSong.title || currentSong.name}}</div>
+      <div v-if="currentSong.artist"
+      >{{currentSong.artist}} | <span>{{currentSong.album}}</span></div>
+      <div v-else>-</div>
+
+      <input type="range"
+        min="0" :max="audio ? audio.duration:0"
+        :value="currentTime"
+        @mousemove="moveUpdate"
+        @click="clickUpdate">
+      <audio :src="currentSong.url"
+        id="audioPlayer"
+        @timeupdate="updateCurrentTime"
+        @ended="nextSong"
+      ></audio>
     </div>
 
-    <ul>
-      <li v-for="(track,i ) in playlist" @click="currentSong = track" :class="{current: track === currentSong}">
-        {{i+1}}: {{track.title || track.name}}
+    <ul id="trackList">
+      <li
+      v-for="(track,i ) in playlist"
+      @click="changeSong(track)"
+      :class="{current: track === currentSong}">
+        <img :src="track.albumArtUrl || icons.music">
+        <div>
+          <span>{{track.title || track.name}}</span>
+          <label v-if="track.artist">{{track.artist}}</label>
+          <label v-else>-</label>
+        </div>
       </li>
     </ul>
 

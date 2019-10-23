@@ -5,7 +5,7 @@ var app = new Vue({
       currentTime: 0,
       audio: null,
       isPlaying: false,
-      audioContext: new AudioContext(),
+      audioContext: '',
       playlist: [],
       currentSong: '',
       icons: {
@@ -23,7 +23,7 @@ var app = new Vue({
       this.updateAudioTime(ev.target.value)
     },
     moveUpdate(ev){
-      if( ev.buttons === 1 ) this.updateAudioTime(ev.target.value)
+      if(ev.buttons === 1) this.updateAudioTime(ev.target.value)
     },
     updateAudioTime(value){
       this.audio.currentTime = value
@@ -35,6 +35,11 @@ var app = new Vue({
       this.audio = document.getElementById('audioPlayer')
     },
     controls(ev){
+      if(ev.keyCode == 32 && ev.target == document.body) {
+        ev.preventDefault()
+        ev.stopPropagation()
+      }
+      if(!this.currentSong) return
       switch(ev.code){
         case "Space":
           this.isPlaying ? this.audio.pause() : this.audio.play()
@@ -66,12 +71,30 @@ var app = new Vue({
         album: tags.album
       }
     },
+    changeSong(track){
+      this.currentSong = track
+      setTimeout(()=>app.isPlaying ? app.audio.play() : '')
+    },
+    nextSong(){
+      const i = this.playlist.indexOf(this.currentSong)
+      this.playlist[i+1] ?
+        this.currentSong = this.playlist[i+1] :
+        this.currentSong = this.playlist[0]
+      setTimeout(()=>app.isPlaying ? app.audio.play() : '')
+    },
     loadFiles: async function(files) {
+      this. audioContext = new AudioContext()
       for (const file of files) {
         if(!file.type.includes('audio')) continue
         const loadTrack = this.getTrackInfo(file)
         loadTrack.then( track => {
-          if(!this.currentSong) this.currentSong = track
+          if(!this.currentSong) {
+            this.currentSong = track
+            setTimeout(() => {
+              app.audio.play()
+              app.isPlaying = true
+            } )
+          }
           this.playlist.push(track)
         } )
       }
