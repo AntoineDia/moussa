@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Api test</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.0"></script>
+</head>
+<body>
+  <div id="app">
+    <input v-model="searchWord" @keyup.enter="search">
+    <ul id="results">
+      <li></li>
+    </ul>
+  </div>
+  <script src="./app.js"></script>
+</body>
+</html>
